@@ -4,6 +4,7 @@ import "./style.scss";
 
 const Logo = ({ size }) => (
   <div className="Logo">
+    <a href="/">
     <svg
       width={size === "large" ? "160" : "130"}
       height={size === "large" ? "60" : "60"}
@@ -109,6 +110,7 @@ const Logo = ({ size }) => (
         </linearGradient>
       </defs>
     </svg>
+    </a>
   </div>
 );
 
