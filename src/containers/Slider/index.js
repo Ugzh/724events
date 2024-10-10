@@ -1,28 +1,33 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useData } from "../../contexts/DataContext";
 import { getMonth } from "../../helpers/Date";
 
 import "./style.scss";
 
 const Slider = () => {
+  
   const { data } = useData();
   const [index, setIndex] = useState(0);
-  const byDateDesc = data?.focus.sort((evtA, evtB) =>
-    new Date(evtA.date) < new Date(evtB.date) ? -1 : 1
+  const byDateDesc = data?.focus?.sort((evtA, evtB) =>
+    new Date(evtA.date) < new Date(evtB.date) ? - 1 : 1
   );
-  const nextCard = () => {
-    setTimeout(
-      () => setIndex(index < byDateDesc.length - 1 ? index + 1 : 0),
-      5000
-    );
+  const intervalRef = useRef(null);
+  const startInterval = () => {
+    intervalRef.current = setInterval(() => {
+      setIndex((prevIndex) => (prevIndex < byDateDesc.length - 1 ? prevIndex + 1 : 0));
+    }, 5000);
   };
 
   useEffect(() => {
-    nextCard();
-  });
+    startInterval();
+      return () => clearInterval(intervalRef.current);
+    }, [byDateDesc]);
 
-
-
+  const handleRadioChange = (i) => {
+    setIndex(i);
+    clearInterval(intervalRef.current);
+    startInterval(); 
+    };
 
   return (
     <div className="SlideCardList">
@@ -52,7 +57,8 @@ const Slider = () => {
                       value={radioIdx}
                       checked={radioIdx === index }
                       onChange={()=>{
-                        setIndex(radioIdx);
+                        
+                        handleRadioChange(radioIdx)
                       }}
                   />
 
